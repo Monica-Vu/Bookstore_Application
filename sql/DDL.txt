@@ -1,0 +1,86 @@
+create table credit_card_information
+	(card_type		                    varchar(15) NOT NULL,
+	 credit_card_month_expiration		numeric(2,0) NOT NULL,
+	 credit_card_year_expiration		numeric(4,0) NOT NULL,
+     credit_card_number                 numeric(15,0) NOT NULL UNIQUE,
+	 primary key (credit_card_number)
+	);
+
+create table customer
+	(user_id            SERIAL,
+	 username		    varchar(20) NOT NULL UNIQUE,
+	 user_password		varchar(20) NOT NULL,
+     email_address		varchar(40),
+     address            varchar(50),
+     phone_number       numeric(10,0),
+	 credit_card_number numeric(15,0) NOT NULL UNIQUE,
+	 primary key (user_id),
+     foreign key (credit_card_number) references credit_card_information
+	 ON DELETE CASCADE
+	 ON UPDATE CASCADE 
+	);
+
+create table bookstore_owner
+	(manager_id           SERIAL,
+     user_id              SERIAL,
+     primary key (manager_id),
+     foreign key (user_id) references customer
+     ON DELETE CASCADE
+	 ON UPDATE CASCADE 
+	);
+
+create table customer_order
+	(user_id                 SERIAL,
+     order_number            SERIAL,
+     status                  varchar(20) NOT NULL,   
+     estimated_arrival       TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP + interval '4' day),
+     order_time              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	 primary key (order_number), 
+     foreign key (user_id) references customer
+	);
+
+create table publisher
+    (publisher_name     varchar(20) NOT NULL,
+    company_address     varchar(50) NOT NULL,
+    charge_percentage   numeric(5,2) CHECK (charge_percentage > 0 AND charge_percentage < 100),
+    bank_account_id     numeric(20,0) NOT NULL UNIQUE,
+    email_address       varchar(40),
+    primary key(publisher_name)
+    );
+
+create table book
+	(ISBN                   numeric(20,0) NOT NULL UNIQUE,
+     title                  varchar(20) NOT NULL,
+     author                 varchar(30) NOT NULL,   
+     genre                  varchar(20) NOT NULL,  
+     price                  numeric(5,2) NOT NULL CHECK(price > 0),
+     page_number            numeric(4,0) CHECK(page_number > 0),
+     percentage_sale        numeric(5,2) CHECK(percentage_sale > 0 AND percentage_sale < 100),
+     publisher_name         varchar(20),
+     stock                  numeric(4, 0),
+	 primary key (ISBN), 
+     foreign key (publisher_name) references publisher
+	);
+
+create table book_order
+   (order_number   SERIAL,
+    ISBN            numeric(20,0) NOT NULL UNIQUE,
+    order_time      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    primary key(order_number, order_time, ISBN),
+    foreign key (order_number) references customer_order,
+    foreign key (ISBN) references book
+    );
+
+create table sales 
+    (order_number   SERIAL,
+    ISBN            numeric(20,0) NOT NULL UNIQUE,
+    manager_id      SERIAL,
+	 
+	primary key (order_number, ISBN, manager_id),
+    foreign key (manager_id) references bookstore_owner,
+    foreign key (order_number) references customer_order,
+    foreign key (ISBN) references book
+    );
+
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
