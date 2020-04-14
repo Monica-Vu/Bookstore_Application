@@ -83,7 +83,7 @@ create table sales
     );
 
 ---
-Some sample data I used  (there's 1-2 more users but this is all that's really needed for testing).
+Some sample data I used  (there's 1-2 more users but this is all that's really needed when I was testing).
 INSERT INTO credit_card_information (credit_card_number, credit_card_month_expiration, credit_card_year_expiration, card_type) 
 VALUES (1234567890, 4, 2021, 'Visa');
 
