@@ -90,6 +90,9 @@ VALUES (1234567890, 4, 2021, 'Visa');
 INSERT INTO customer (username, user_password, address, email_address, phone_number, credit_card_number)
 VALUES ('testuser', 'testpass', '31 Test Drive', 'test@gmail.com', 6138010594, 1234567890)
 
+INSERT INTO publisher (publisher_name, company_address, charge_percentage, bank_account_id, email_address)
+VALUES ('Publisher 1', 90 Test Street, 10, 123, 'publisher@company.ca')
+
 INSERT INTO book (isbn, title, author, genre, price, page_number, percentage_sale, publisher_name, stock)
 VALUES (1, 'Postgress SQL', 'Sad Programmer', 'Technology', 10.25, 340, 10, 'Publisher 1', 100)
 
